@@ -56,8 +56,11 @@ ncores = 3
 
 ##Set up objects
 
-inputRestartFile <- paste0("Restart/rstart.round", roundMy - 1, ".rst")
-outputRestartFile <- paste0("Restart/rstart.round", roundMy, ".rst")
+inputDirectory <- "~/Documents/Research/gilchrist-lab-eb"
+outputDirectory <- "~/Documents/Research/gilchrist-lab-eb/output"
+
+inputRestartFile <- paste0(outputDirectory, "Restart/rstart.round.", roundMy - 1, ".rst")
+outputRestartFile <- paste0(outputDirectory, "Restart/rstart.round.", roundMy, ".rst")
 
 
 ### Create Genome Object
@@ -87,8 +90,8 @@ roundMy <- roundInitial
 
 while(roundMy <= roundMax) {
   
-  inputRestartFile <- paste0("Restart/rstart.round", roundMy - 1, ".rst")
-  outputRestartFile <- paste0("Restart/rstart.round", roundMy, ".rst")
+  inputRestartFile <- paste0(outputDirectory, "Restart/rstart.round.", roundMy - 1, ".rst")
+  outputRestartFile <- paste0(outputDirectory, "Restart/rstart.round.", roundMy, ".rst")
 
 if(runModel) {
   if(roundMy ==1) {
@@ -104,10 +107,11 @@ if(runModel) {
         gene.assignment = rep(1, genomeLength)
       )
   
-} else { ##anything other than first round
+} 
+  else { ##anything other than first round
   parameter <- initializeParameterObject(
                genome = genome,
-               init.with.restart.file = input.restart.file,
+               init.with.restart.file = inputRestartFile,
                model = whichModel
   )
 }
@@ -125,7 +129,7 @@ mcmc <- initializeMCMCObject(samples = samples[roundMy],
 mcmc$setStepsToAdapt(adaptive.steps[roundMy])
 
 ##Set up restart files
-setRestartSettings(mcmc = mcmc, filename = output.restart.file, samples = adaptive.width*10, write.multiple = FALSE)
+#setRestartSettings(mcmc = mcmc, filename = outputRestartFile, samples = adaptive.width*10, write.multiple = FALSE)
 ##run mcmc on genome with parameter using model
 print(paste0("Starting MCMC round: ", roundMy))
 
@@ -171,7 +175,10 @@ if(saveParameters) {
   
   print("Write summaries of CSP")
   ## save output to csv file
-  getCSPEstimates(parameter = parameter, filename = paste0("Parameters/csp.round-", roundMy), mixture = 1,
+  getCSPEstimates(parameter = parameter, filename = paste0(outputDirectory,
+                                                           "Parameters/csp.round-", 
+                                                           roundMy), 
+  mixture = 1,
    samples = samples)
   
   print("Save estimates of phi")
@@ -183,7 +190,7 @@ if(saveParameters) {
   
   phiTibble <- bind_cols(isoform.ID = genomeIDs, phiVals)
   write.table(phiTibble,
-              file = paste0("Parameters/phi.round-", roundMy, ".csv"),
+              file = paste0("Parameters/phi.round-", roundMy, ".csv", collapse = ""),
               sep = ",",
               col.names = TRUE,
               quote = FALSE,
