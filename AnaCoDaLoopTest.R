@@ -56,7 +56,7 @@ ncores = 3
 
 ##Set up objects
 
-inputDirectory <- "~/Documents/Research/gilchrist-lab-eb"
+inputDirectory <- "~/Documents/Research/gilchrist-lab-eb/input"
 outputDirectory <- "~/Documents/Research/gilchrist-lab-eb/output"
 
 inputRestartFile <- paste0(outputDirectory, "Restart/rstart.round.", roundMy - 1, ".rst")
@@ -129,7 +129,7 @@ mcmc <- initializeMCMCObject(samples = samples[roundMy],
 mcmc$setStepsToAdapt(adaptive.steps[roundMy])
 
 ##Set up restart files
-#setRestartSettings(mcmc = mcmc, filename = outputRestartFile, samples = adaptive.width*10, write.multiple = FALSE)
+setRestartSettings(mcmc = mcmc, filename = outputRestartFile, samples = adaptive.width*10, write.multiple = FALSE)
 ##run mcmc on genome with parameter using model
 print(paste0("Starting MCMC round: ", roundMy))
 
@@ -176,10 +176,10 @@ if(saveParameters) {
   print("Write summaries of CSP")
   ## save output to csv file
   getCSPEstimates(parameter = parameter, filename = paste0(outputDirectory,
-                                                           "Parameters/csp.round-", 
+                                                           "/Parameters/csp.round-", 
                                                            roundMy), 
   mixture = 1,
-   samples = samples)
+   samples = samples[roundMy])
   
   print("Save estimates of phi")
   phiVals <- getExpressionEstimates(
