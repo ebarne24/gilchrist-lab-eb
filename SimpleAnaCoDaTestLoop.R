@@ -55,10 +55,12 @@ fasta.file <- "orf_genomic_R64-3-1_20210421.fasta"
 ncores = 3
 initial.divergence <- 4
 
+createGenomeObject <- function(fasta.files, gene.index = NULL, observed.expression.files = NULL, ...){
+
 #Set up objects
 
 inputDirectory <- "~/Documents/Research/gilchrist-lab-eb/input"
-outputDirectory <- "~/Documents/Research/gilchrist-lab-eb/output"
+outputDirectory <- "~/Documents/Research/gilchrist-lab-eb/output/"
 
 inputRestartFile <- paste0(outputDirectory, "Restart/rstart.round.", roundMy - 1, ".rst")
 outputRestartFile <- paste0(outputDirectory, "Restart/rstart.round.", roundMy, ".rst")
@@ -85,7 +87,7 @@ genomeLength <- length(genomeIDs)
 
 ##Do multiple rounds of model fitting
 
-roundMy <- roundInitial
+roundMy <- 6
 
 while(roundMy <= roundMax) {
   
@@ -206,9 +208,11 @@ if(saveParameters) {
     outputFile <- paste0(outputDirectory, "Graphs/csp.traces.round-", roundMy, ".pdf")
     
     pdf(outputFile, title = "Codon Specific Traces: Reference Yeast")
+    plot(x = trace, what = "Mutation", samples = 1000)
+    plot(x = trace, what = "Selection", samples = 1000)
+    plot(x = trace, what = "AcceptanceRatio", samples = 1000)
+    dev.off()
     
-   createTracePlots(trace, model, genome, numMixtures = numMixtures, samples = samples[roundMy], keep.fraction = keep.fractions[roundMy], mixture.labels = "reference yeast")
-   dev.off()
    
   }
   
